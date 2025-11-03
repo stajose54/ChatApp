@@ -1,27 +1,31 @@
 pipeline {
-  agent { label 'CYBR-3120-Appserver' }   // run everything on this node
+  agent { label 'appServer' }
   environment {
     DOCKERHUB_CREDENTIALS = 'cybr-3120'
     IMAGE_NAME = 'stajose/chatapp'
   }
-  options { skipDefaultCheckout(true) }    // avoid implicit checkout on controller
 
   stages {
-    stage('Checkout') {
+    stage('Cloning Git') {
       steps { checkout scm }
     }
 
+
+
     stage('BUILD-AND-TAG') {
+      agent { label 'CYBR-3120-Appserver' }
       steps {
         script {
           echo "Building Docker image ${IMAGE_NAME}..."
           def app = docker.build("${IMAGE_NAME}")
           app.tag('latest', true)
+          stash name: 'built-image-name', includes: ''
         }
       }
     }
 
     stage('POST-TO-DOCKERHUB') {
+      agent { label 'CYBR-3120-Appserver' }
       steps {
         script {
           echo "Pushing image ${IMAGE_NAME}:latest to Docker Hub"
@@ -45,15 +49,18 @@ pipeline {
     }
 
     stage('DEPLOYMENT') {
+      agent { label 'CYBR-3120-Appserver' }
       steps {
         echo 'Starting deployment using docker compose...'
-        sh '''
-          set -e
-          docker compose down || true
-          docker compose pull || true
-          docker compose up -d
-          docker ps
-        '''
+        dir("${WORKSPACE}") {
+          sh '''
+            set -e
+            docker compose down || true
+            docker compose pull || true
+            docker compose up -d
+            docker ps
+          '''
+        }
         echo 'Deployment completed successfully'
       }
     }
