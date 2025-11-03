@@ -1,5 +1,5 @@
 pipeline {
-  agent any
+  agent { label 'CYBR-3120-Appserver' }
   environment {
     DOCKERHUB_CREDENTIALS = 'cybr-3120'
     IMAGE_NAME = 'stajose/chatapp'
