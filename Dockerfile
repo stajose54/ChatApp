@@ -1,0 +1,18 @@
+# Use a lightweight Node.js image
+FROM node:25.1.0-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first and install dependancies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the code
+COPY . .
+
+# Expose port 3000
+EXPOSE 3700
+
+# Start the app
+CMD ["node", "index.js"]

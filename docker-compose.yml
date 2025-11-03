@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  gameapptestauto:
+    image: stajose/chatapp:latest
+    build: .
+    container_name: chatapp
+    ports: 
+      - "80:3700"
+    environment: 
+      - PORT=3700
+    volumes:
+      - ./:/app
+    command: ["node", "index.js"]
