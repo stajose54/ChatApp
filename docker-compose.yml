@@ -5,7 +5,7 @@ services:
     build: .
     container_name: chatapp
     ports: 
-      - "80:3700"
+      - "8080:3700"
     environment: 
       - PORT=3700
     volumes:
