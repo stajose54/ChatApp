@@ -17,9 +17,9 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube-Scanner'
-                    withSonarQubeEnv('sonarqube') {
+                    withSonarQubeEnv('cybr-3120-sonar') {
                         sh "${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey='Chat-application' \
+                            -Dsonar.projectKey=Chat-application \
                             -Dsonar.sources=."
                     }
                 }
